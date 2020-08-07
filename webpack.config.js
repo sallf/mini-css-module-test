@@ -4,6 +4,7 @@ const path = require('path');
 // PLUGINS
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // simplifies HTML files for webpack (really connects to the index.ejs file)
 const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // remove/clean your build folder(s)
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = (env, argv) => {
   const { mode } = argv;
@@ -28,10 +29,15 @@ module.exports = (env, argv) => {
     minify: false,
   });
 
+  const miniCssExtractPlugin = new MiniCssExtractPlugin({
+    filename: '[name].[contenthash].css',
+  });
+
   const cleanWebpackPlugin = new CleanWebpackPlugin();
 
   const plugins = [
     htmlWebpackPlugin,
+    miniCssExtractPlugin,
   ];
 
   if (isProd) {
@@ -63,11 +69,25 @@ module.exports = (env, argv) => {
           },
         },
         {
-          test: /\.s[ac]ss$/i,
-          use: [
-            'style-loader', // Creates `style` nodes from JS strings
-            'css-loader', // Translates CSS into CommonJS
-            'sass-loader', // Compiles Sass to CSS
+          test: /\.scss$/,
+          loader: [
+            MiniCssExtractPlugin.loader,
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  localIdentName: '[local]___',
+                  auto: /(components|containers).*\.scss$/,
+                },
+                sourceMap: true,
+              },
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: true,
+              },
+            },
           ],
         },
         {
