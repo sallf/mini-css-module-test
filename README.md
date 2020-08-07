@@ -8,10 +8,6 @@ Boilerplate template for building `npm` modules with React and JSX. Also include
 3. Use CircleCI to deploy to AWS S3.
 
 ## Getting Started
-Clone the repo.
-```
-$ git clone https://github.com/sallf/react-npm-boilerplate.git
-```
 Install packages.
 ```
 $ npm install
